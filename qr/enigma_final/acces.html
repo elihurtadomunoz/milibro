@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accés al diploma</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:820px;margin:40px auto;padding:0 16px;line-height:1.5;color:#222}
+    .card{background:#fff;border:1px solid #e6e6e6;border-radius:14px;padding:18px 18px;margin:14px 0;box-shadow:0 1px 10px rgba(0,0,0,.04)}
+    h1{font-size:1.5rem;margin:0 0 10px}
+    .muted{color:#666;font-size:.95rem}
+    input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #ccc;font-size:1rem}
+    button{padding:10px 14px;border-radius:12px;border:0;background:#111;color:#fff;font-weight:700;cursor:pointer}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .ok{color:#0a7a2f;font-weight:700}
+    .bad{color:#b00020;font-weight:700}
+    a.dl{display:inline-block;margin-top:10px;padding:10px 14px;border-radius:12px;background:#0a7a2f;color:#fff;text-decoration:none;font-weight:800}
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Accés al diploma</h1>
+    <p class="muted">Introdueix la contrasenya per descarregar el diploma.</p>
+  </div>
+
+  <div id="guard" class="card" style="display:none;">
+    <p class="bad">
+      No has completat el qüestionari des d’aquest dispositiu/navegador.
+    </p>
+    <p class="muted">
+      Torna a l’inici i respon les preguntes correctament:
+      <a href="./index.html">Anar al qüestionari</a>
+    </p>
+  </div>
+
+  <div id="content" class="card" style="display:none;">
+    <label for="pw"><b>Contrasenya</b></label>
+    <div class="row">
+      <input id="pw" type="password" placeholder="Escriu la contrasenya…" />
+      <button id="btn" type="button">Entrar</button>
+    </div>
+    <p id="msg" style="margin-top:10px;"></p>
+
+    <div id="download" style="display:none;">
+      <p class="ok">✅ Accés concedit.</p>
+      <a class="dl" href="./diploma.pdf" download>Descarregar diploma (PDF)</a>
+      <p class="muted" style="margin-top:8px;">
+        Si no es descarrega, mantén premut i tria “Descarregar l’enllaç”.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Bloqueig “suau” si no vens del qüestionari (localStorage)
+    const ok = localStorage.getItem("sixmix_quiz_ok") === "1";
+    document.getElementById(ok ? "content" : "guard").style.display = "block";
+
+    // 1) POSA AQUÍ EL HASH SHA-256 DE LA TEVA CONTRASENYA (en hex)
+    // Exemple: si la contrasenya és "tarragona2026", genera el hash i enganxa'l aquí.
+    const PASSWORD_SHA256_HEX = "ENGANXA_AQUI_EL_HASH_SHA256";
+
+    const pw = document.getElementById("pw");
+    const btn = document.getElementById("btn");
+    const msg = document.getElementById("msg");
+    const download = document.getElementById("download");
+
+    async function sha256Hex(text){
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    async function comprova(){
+      msg.textContent = "";
+      download.style.display = "none";
+      const entered = pw.value || "";
+      const hash = await sha256Hex(entered);
+
+      if (hash === PASSWORD_SHA256_HEX) {
+        msg.className = "ok";
+        msg.textContent = "Contrasenya correcta.";
+        download.style.display = "block";
+      } else {
+        msg.className = "bad";
+        msg.textContent = "Contrasenya incorrecta.";
+      }
+    }
+
+    btn?.addEventListener("click", comprova);
+    pw?.addEventListener("keydown", (e) => { if (e.key === "Enter") comprova(); });
+
+    // Per generar el hash al navegador:
+    // Obre aquesta pàgina, F12 -> Consola, i executa:
+    // (async()=>{const t="LA_TEVA_CONTRASENYA"; const e=new TextEncoder().encode(t);
+    // const b=await crypto.subtle.digest("SHA-256", e);
+    // console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""));})();
+  </script>
+
+</body>
+</html>
