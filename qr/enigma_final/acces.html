@@ -5,47 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Accés al diploma</title>
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:820px;margin:40px auto;padding:0 16px;line-height:1.5;color:#222}
-    .card{background:#fff;border:1px solid #e6e6e6;border-radius:14px;padding:18px 18px;margin:14px 0;box-shadow:0 1px 10px rgba(0,0,0,.04)}
-    h1{font-size:1.5rem;margin:0 0 10px}
-    .muted{color:#666;font-size:.95rem}
-    input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #ccc;font-size:1rem}
-    button{padding:10px 14px;border-radius:12px;border:0;background:#111;color:#fff;font-weight:700;cursor:pointer}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .ok{color:#0a7a2f;font-weight:700}
-    .bad{color:#b00020;font-weight:700}
-    a.dl{display:inline-block;margin-top:10px;padding:10px 14px;border-radius:12px;background:#0a7a2f;color:#fff;text-decoration:none;font-weight:800}
+    :root{
+      --primary:#7b2d2a; --primary-dark:#642321; --bg:#ffffff;
+      --panel:#f3efee; --border:#e6e0de; --text:#222; --muted:#5f5f5f;
+      --ok:#0a7a2f; --bad:#b00020; --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);max-width:920px;margin:40px auto;padding:0 18px;line-height:1.55}
+    h1{font-size:2rem;margin:0 0 10px;display:flex;gap:12px;align-items:center}
+    h1 .icon{font-size:1.6rem;line-height:1}
+    .muted{color:var(--muted)}
+    .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 1px 10px rgba(0,0,0,.04);margin:14px 0}
+    label{display:block;font-weight:900;margin:12px 0 6px}
+    input[type="password"]{width:100%;padding:12px 12px;border-radius:12px;border:1px solid #cfc7c5;font-size:1rem;outline:none}
+    input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(123,45,42,.12)}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .btn{display:inline-block;padding:14px 18px;border-radius:12px;border:0;background:var(--primary);color:#fff;font-weight:900;cursor:pointer;text-decoration:none}
+    .btn:hover{background:var(--primary-dark)}
+    .btn.secondary{background:#e9e1df;color:var(--primary);border:1px solid var(--border)}
+    .btn.secondary:hover{background:#ddd3d0}
+    .bad{color:var(--bad);font-weight:900}
+    .ok{color:var(--ok);font-weight:900}
+    a.dl{display:inline-block;margin-top:10px;padding:14px 18px;border-radius:12px;background:var(--primary);color:#fff;text-decoration:none;font-weight:900}
+    a.dl:hover{background:var(--primary-dark)}
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h1>Accés al diploma</h1>
-    <p class="muted">Introdueix la contrasenya per descarregar el diploma.</p>
+    <h1><span class="icon">🎓</span> Accés al diploma</h1>
+    <p class="muted">Introdueix la contrasenya per descarregar el teu diploma.</p>
   </div>
 
   <div id="guard" class="card" style="display:none;">
-    <p class="bad">
-      No has completat el qüestionari des d’aquest dispositiu/navegador.
-    </p>
+    <p class="bad">No has completat el qüestionari des d’aquest dispositiu/navegador.</p>
     <p class="muted">
-      Torna a l’inici i respon les preguntes correctament:
+      Torna a l’inici i resol el repte:
       <a href="./index.html">Anar al qüestionari</a>
     </p>
   </div>
 
   <div id="content" class="card" style="display:none;">
-    <label for="pw"><b>Contrasenya</b></label>
+    <label for="pw">Contrasenya</label>
     <div class="row">
       <input id="pw" type="password" placeholder="Escriu la contrasenya…" />
-      <button id="btn" type="button">Entrar</button>
+      <button id="btn" class="btn" type="button">Entrar</button>
+      <a class="btn secondary" href="./index.html">Tornar</a>
     </div>
-    <p id="msg" style="margin-top:10px;"></p>
+
+    <p id="msg" style="margin-top:12px;"></p>
 
     <div id="download" style="display:none;">
       <p class="ok">✅ Accés concedit.</p>
       <a class="dl" href="./diploma.pdf" download>Descarregar diploma (PDF)</a>
-      <p class="muted" style="margin-top:8px;">
+      <p class="muted" style="margin-top:10px;">
         Si no es descarrega, mantén premut i tria “Descarregar l’enllaç”.
       </p>
     </div>
@@ -56,8 +69,7 @@
     const ok = localStorage.getItem("sixmix_quiz_ok") === "1";
     document.getElementById(ok ? "content" : "guard").style.display = "block";
 
-    // 1) POSA AQUÍ EL HASH SHA-256 DE LA TEVA CONTRASENYA (en hex)
-    // Exemple: si la contrasenya és "tarragona2026", genera el hash i enganxa'l aquí.
+    // POSA AQUÍ EL HASH SHA-256 DE LA TEVA CONTRASENYA (en hex)
     const PASSWORD_SHA256_HEX = "ENGANXA_AQUI_EL_HASH_SHA256";
 
     const pw = document.getElementById("pw");
@@ -90,8 +102,7 @@
     btn?.addEventListener("click", comprova);
     pw?.addEventListener("keydown", (e) => { if (e.key === "Enter") comprova(); });
 
-    // Per generar el hash al navegador:
-    // Obre aquesta pàgina, F12 -> Consola, i executa:
+    // Per generar el hash al navegador (F12 -> Consola):
     // (async()=>{const t="LA_TEVA_CONTRASENYA"; const e=new TextEncoder().encode(t);
     // const b=await crypto.subtle.digest("SHA-256", e);
     // console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""));})();
@@ -99,3 +110,4 @@
 
 </body>
 </html>
+
