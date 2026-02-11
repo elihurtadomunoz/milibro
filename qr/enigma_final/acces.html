@@ -110,7 +110,7 @@
       const { PDFDocument, StandardFonts, rgb } = PDFLib;
 
       // IMPORTANT: posa el teu diploma base com "plantilla.pdf" a la mateixa carpeta
-      const plantillaBytes = await fetch("./plantilla.pdf").then(r => r.arrayBuffer());
+      const plantillaBytes = await fetch("./Plantilla.pdf").then(r => r.arrayBuffer());
       const pdfDoc = await PDFDocument.load(plantillaBytes);
 
       const page = pdfDoc.getPages()[0];
