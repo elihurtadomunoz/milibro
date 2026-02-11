@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Enigma final</title>
   <style>
-    /* --- TEMA (mateix estil) --- */
     :root{
       --primary:#7b2d2a; --primary-dark:#642321; --bg:#ffffff;
       --panel:#f3efee; --border:#e6e0de; --text:#222; --muted:#5f5f5f;
@@ -32,16 +31,13 @@
     .btn.secondary:hover{background:#ddd3d0}
     .bad{color:var(--bad);font-weight:900}
     .ok{color:var(--ok);font-weight:900}
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;background:var(--panel);border:1px solid var(--border);border-radius:12px;font-weight:900}
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h1><span class="icon">🏔️</span> Enigma final</h1>
-    <p class="muted">
-      Respon les preguntes. Si són correctes, podràs accedir a la pàgina amb contrasenya i descarregar el diploma.
-    </p>
+    <h1><span class="icon">🧩</span> Enigma final</h1>
+    <p class="muted">Respon les preguntes. Si són correctes, podràs accedir al diploma.</p>
   </div>
 
   <details class="accordion" open>
@@ -53,7 +49,6 @@
         <div class="row" style="margin-top:14px;">
           <button class="btn" type="submit">Comprovar respostes</button>
           <button class="btn secondary" id="resetBtn" type="button">Reiniciar</button>
-          <span class="pill">⏳ Sense pressa… però amb cap!</span>
         </div>
 
         <p id="msg" style="margin-top:12px;"></p>
@@ -61,16 +56,28 @@
     </div>
   </details>
 
-  <!-- Botó opcional estil Wikiloc (si vols) -->
-  <!-- <a class="btn" style="margin-top:18px;" href="https://..." target="_blank" rel="noopener">Veure la ruta a Wikiloc</a> -->
-
   <script>
-    // EDITA AQUÍ LES PREGUNTES I RESPOSTES
+    // PREGUNTES I RESPOSTES CORRECTES (les teves)
     // Comprovació tolerant: ignora majúscules, accents i espais extra.
     const QUIZ = [
-      { id: "q1", label: "1) Com es diu el grup protagonista?", placeholder: "Escriu la resposta…", answer: "Sixmix" },
-      { id: "q2", label: "2) A quina ciutat passa l’activitat?", placeholder: "Escriu la resposta…", answer: "Tarragona" },
-      { id: "q3", label: "3) Paraula clau del tema principal (una paraula):", placeholder: "Escriu la resposta…", answer: "contaminació" }
+      {
+        id: "q1",
+        label: "1) Què no poden fer els Gremlins després de mitjanit?",
+        placeholder: "Escriu la resposta…",
+        answer: "menjar"
+      },
+      {
+        id: "q2",
+        label: "2) Quin és el nom de l'espasa de Frodo?",
+        placeholder: "Escriu la resposta…",
+        answer: "dardo"
+      },
+      {
+        id: "q3",
+        label: "3) Com es diu “Hola” en Klingon?",
+        placeholder: "Escriu la resposta…",
+        answer: "nuqneh"
+      }
     ];
 
     const form = document.getElementById("quizForm");
@@ -83,8 +90,8 @@
         .toString()
         .trim()
         .toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-        .replace(/\s+/g," ");
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"") // treu accents
+        .replace(/\s+/g," "); // col·lapsa espais
     }
 
     function renderitza(){
@@ -93,51 +100,3 @@
         const div = document.createElement("div");
         div.innerHTML = `
           <label for="${q.id}">${q.label}</label>
-          <input id="${q.id}" name="${q.id}" type="text" placeholder="${q.placeholder}" />
-        `;
-        qWrap.appendChild(div);
-      });
-    }
-
-    renderitza();
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      msg.textContent = "";
-
-      let correctes = 0;
-      const errors = [];
-
-      QUIZ.forEach(q => {
-        const el = document.getElementById(q.id);
-        const val = el.value;
-        if (normalitza(val) === normalitza(q.answer)) {
-          correctes++;
-          el.style.borderColor = "#cfc7c5";
-        } else {
-          errors.push(q.id);
-        }
-      });
-
-      if (correctes === QUIZ.length) {
-        localStorage.setItem("sixmix_quiz_ok", "1");
-        msg.className = "ok";
-        msg.textContent = "✅ Perfecte! Accés desbloquejat…";
-        setTimeout(() => { window.location.href = "./acces.html"; }, 700);
-      } else {
-        msg.className = "bad";
-        msg.textContent = `❌ Et falten ${QUIZ.length - correctes}. Revisa i torna-ho a provar.`;
-        errors.forEach(id => document.getElementById(id).style.borderColor = "#b00020");
-      }
-    });
-
-    resetBtn.addEventListener("click", () => {
-      form.reset();
-      msg.textContent = "";
-      QUIZ.forEach(q => document.getElementById(q.id).style.borderColor = "#cfc7c5");
-      localStorage.removeItem("sixmix_quiz_ok");
-    });
-  </script>
-
-</body>
-</html>
