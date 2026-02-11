@@ -24,7 +24,7 @@
     label{display:block;font-weight:800;margin:12px 0 6px}
     input[type="text"]{width:100%;padding:12px 12px;border-radius:12px;border:1px solid #cfc7c5;font-size:1rem;outline:none}
     input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(123,45,42,.12)}
-    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
     .btn{display:inline-block;padding:14px 18px;border-radius:12px;border:0;background:var(--primary);color:#fff;font-weight:900;cursor:pointer;text-decoration:none}
     .btn:hover{background:var(--primary-dark)}
     .btn.secondary{background:#e9e1df;color:var(--primary);border:1px solid var(--border)}
@@ -44,59 +44,5 @@
     <summary>🔒 Repte (fes clic aquí)</summary>
     <div class="content">
       <form id="quizForm" autocomplete="off">
-        <div id="questions"></div>
-
-        <div class="row" style="margin-top:14px;">
-          <button class="btn" type="submit">Comprovar respostes</button>
-          <button class="btn secondary" id="resetBtn" type="button">Reiniciar</button>
-        </div>
-
-        <p id="msg" style="margin-top:12px;"></p>
-      </form>
-    </div>
-  </details>
-
-  <script>
-    // PREGUNTES I RESPOSTES CORRECTES (les teves)
-    // Comprovació tolerant: ignora majúscules, accents i espais extra.
-    const QUIZ = [
-      {
-        id: "q1",
-        label: "1) Què no poden fer els Gremlins després de mitjanit?",
-        placeholder: "Escriu la resposta…",
-        answer: "menjar"
-      },
-      {
-        id: "q2",
-        label: "2) Quin és el nom de l'espasa de Frodo?",
-        placeholder: "Escriu la resposta…",
-        answer: "dardo"
-      },
-      {
-        id: "q3",
-        label: "3) Com es diu “Hola” en Klingon?",
-        placeholder: "Escriu la resposta…",
-        answer: "nuqneh"
-      }
-    ];
-
-    const form = document.getElementById("quizForm");
-    const qWrap = document.getElementById("questions");
-    const msg = document.getElementById("msg");
-    const resetBtn = document.getElementById("resetBtn");
-
-    function normalitza(s){
-      return (s || "")
-        .toString()
-        .trim()
-        .toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g,"") // treu accents
-        .replace(/\s+/g," "); // col·lapsa espais
-    }
-
-    function renderitza(){
-      qWrap.innerHTML = "";
-      QUIZ.forEach(q => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <label for="${q.id}">${q.label}</label>
+        <!-- PREGUNTES (VISIBLES SÍ O SÍ) -->
+        <label for="q1">1) Què no poden fer els Gremlins després de mitjan
