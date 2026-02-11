@@ -45,4 +45,82 @@
     <div class="content">
       <form id="quizForm" autocomplete="off">
         <!-- PREGUNTES (VISIBLES SÍ O SÍ) -->
-        <label for="q1">1) Què no poden fer els Gremlins després de mitjan
+        <label for="q1">1) Què no poden fer els Gremlins després de mitjanit?</label>
+        <input id="q1" type="text" placeholder="Escriu la resposta…" />
+
+        <label for="q2">2) Quin és el nom de l'espasa de Frodo?</label>
+        <input id="q2" type="text" placeholder="Escriu la resposta…" />
+
+        <label for="q3">3) Com es diu “Hola” en Klingon?</label>
+        <input id="q3" type="text" placeholder="Escriu la resposta…" />
+
+        <div class="row">
+          <button class="btn" type="submit">Comprovar respostes</button>
+          <button class="btn secondary" id="resetBtn" type="button">Reiniciar</button>
+        </div>
+
+        <p id="msg" style="margin-top:12px;"></p>
+      </form>
+    </div>
+  </details>
+
+  <script>
+    // Respostes correctes
+    const ANSWERS = {
+      q1: "menjar",
+      q2: "dardo",
+      q3: "nuqneh" // acceptarem nuqneH també, perquè normalitzem a minúscules
+    };
+
+    const form = document.getElementById("quizForm");
+    const msg = document.getElementById("msg");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function normalitza(s){
+      return (s || "")
+        .toString()
+        .trim()
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"") // treu accents
+        .replace(/\s+/g," ");
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      msg.textContent = "";
+
+      let ok = true;
+      for (const id of ["q1","q2","q3"]) {
+        const el = document.getElementById(id);
+        const correcta = normalitza(ANSWERS[id]);
+        const escrita = normalitza(el.value);
+
+        if (escrita !== correcta) {
+          ok = false;
+          el.style.borderColor = "#b00020";
+        } else {
+          el.style.borderColor = "#cfc7c5";
+        }
+      }
+
+      if (ok) {
+        localStorage.setItem("sixmix_quiz_ok", "1");
+        msg.className = "ok";
+        msg.textContent = "✅ Perfecte! Accés desbloquejat…";
+        setTimeout(() => { window.location.href = "./acces.html"; }, 700);
+      } else {
+        msg.className = "bad";
+        msg.textContent = "❌ Alguna resposta no és correcta. Torna-ho a provar.";
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      form.reset();
+      msg.textContent = "";
+      ["q1","q2","q3"].forEach(id => document.getElementById(id).style.borderColor = "#cfc7c5");
+      localStorage.removeItem("sixmix_quiz_ok");
+    });
+  </script>
+
+</body>
+</html>
