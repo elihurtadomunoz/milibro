@@ -17,7 +17,7 @@
     .muted{color:var(--muted)}
     .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 1px 10px rgba(0,0,0,.04);margin:14px 0}
     label{display:block;font-weight:900;margin:12px 0 6px}
-    input[type="password"]{width:100%;padding:12px 12px;border-radius:12px;border:1px solid #cfc7c5;font-size:1rem;outline:none}
+    input{width:100%;padding:12px 12px;border-radius:12px;border:1px solid #cfc7c5;font-size:1rem;outline:none}
     input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(123,45,42,.12)}
     .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
     .btn{display:inline-block;padding:14px 18px;border-radius:12px;border:0;background:var(--primary);color:#fff;font-weight:900;cursor:pointer;text-decoration:none}
@@ -26,23 +26,18 @@
     .btn.secondary:hover{background:#ddd3d0}
     .bad{color:var(--bad);font-weight:900}
     .ok{color:var(--ok);font-weight:900}
-    a.dl{display:inline-block;margin-top:10px;padding:14px 18px;border-radius:12px;background:var(--primary);color:#fff;text-decoration:none;font-weight:900}
-    a.dl:hover{background:var(--primary-dark)}
   </style>
 </head>
 <body>
 
   <div class="card">
     <h1><span class="icon">🎓</span> Accés al diploma</h1>
-    <p class="muted">Introdueix la contrasenya per descarregar el teu diploma.</p>
+    <p class="muted">Introdueix la contrasenya i després escriu el teu nom per generar el diploma.</p>
   </div>
 
   <div id="guard" class="card" style="display:none;">
     <p class="bad">No has completat el qüestionari des d’aquest dispositiu/navegador.</p>
-    <p class="muted">
-      Torna a l’inici i resol el repte:
-      <a href="./index.html">Anar al qüestionari</a>
-    </p>
+    <p class="muted"><a href="./index.html">Torna al qüestionari</a></p>
   </div>
 
   <div id="content" class="card" style="display:none;">
@@ -52,62 +47,22 @@
       <button id="btn" class="btn" type="button">Entrar</button>
       <a class="btn secondary" href="./index.html">Tornar</a>
     </div>
-
     <p id="msg" style="margin-top:12px;"></p>
 
-    <div id="download" style="display:none;">
-      <p class="ok">✅ Accés concedit.</p>
-      <a class="dl" href="./diploma.pdf" download>Descarregar diploma (PDF)</a>
-      <p class="muted" style="margin-top:10px;">
-        Si no es descarrega, mantén premut i tria “Descarregar l’enllaç”.
+    <div id="personalitza" style="display:none; margin-top:14px;">
+      <label for="nom">Nom i cognoms</label>
+      <div class="row">
+        <input id="nom" type="text" placeholder="Escriu el teu nom…" />
+        <button id="gen" class="btn" type="button">Generar diploma</button>
+      </div>
+      <p id="genMsg" style="margin-top:10px;"></p>
+      <p class="muted" style="margin-top:8px;">
+        El diploma es genera al moment i es descarrega en PDF.
       </p>
     </div>
   </div>
 
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
   <script>
-    // Bloqueig “suau” si no vens del qüestionari (localStorage)
-    const ok = localStorage.getItem("sixmix_quiz_ok") === "1";
-    document.getElementById(ok ? "content" : "guard").style.display = "block";
-
-    // POSA AQUÍ EL HASH SHA-256 DE LA TEVA CONTRASENYA (en hex)
-    const PASSWORD_SHA256_HEX = "ENGANXA_AQUI_EL_HASH_SHA256";
-
-    const pw = document.getElementById("pw");
-    const btn = document.getElementById("btn");
-    const msg = document.getElementById("msg");
-    const download = document.getElementById("download");
-
-    async function sha256Hex(text){
-      const enc = new TextEncoder().encode(text);
-      const buf = await crypto.subtle.digest("SHA-256", enc);
-      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
-    }
-
-    async function comprova(){
-      msg.textContent = "";
-      download.style.display = "none";
-      const entered = pw.value || "";
-      const hash = await sha256Hex(entered);
-
-      if (hash === PASSWORD_SHA256_HEX) {
-        msg.className = "ok";
-        msg.textContent = "Contrasenya correcta.";
-        download.style.display = "block";
-      } else {
-        msg.className = "bad";
-        msg.textContent = "Contrasenya incorrecta.";
-      }
-    }
-
-    btn?.addEventListener("click", comprova);
-    pw?.addEventListener("keydown", (e) => { if (e.key === "Enter") comprova(); });
-
-    // Per generar el hash al navegador (F12 -> Consola):
-    // (async()=>{const t="LA_TEVA_CONTRASENYA"; const e=new TextEncoder().encode(t);
-    // const b=await crypto.subtle.digest("SHA-256", e);
-    // console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""));})();
-  </script>
-
-</body>
-</html>
-
+    // Bloqueig suau: només si has
