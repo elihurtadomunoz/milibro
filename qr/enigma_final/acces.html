@@ -32,7 +32,7 @@
 
   <div class="card">
     <h1><span class="icon">🎓</span> Accés al diploma</h1>
-    <p class="muted">Introdueix la contrasenya i després escriu el teu nom per generar el diploma.</p>
+    <p class="muted">Introdueix la contrasenya de 3 dígits obtinguda a les tres pistes trobades a la cabana, la Mola i la platja i després escriu el teu nom per generar el diploma.</p>
   </div>
 
   <div id="guard" class="card" style="display:none;">
@@ -62,7 +62,118 @@
     </div>
   </div>
 
+  <!-- pdf-lib -->
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
   <script>
-    // Bloqueig suau: només si has
+    // Bloqueig suau: només si has passat el qüestionari en aquest navegador
+    const ok = localStorage.getItem("sixmix_quiz_ok") === "1";
+    document.getElementById(ok ? "content" : "guard").style.display = "block";
+
+    // Contrasenya: 3NE (hash SHA-256 en hex)
+    const PASSWORD_SHA256_HEX = "41faf051a9ed50bf6e35214965604576378cfbf605f2ce95f000ca1cc8d1f20b";
+
+    const pw = document.getElementById("pw");
+    const btn = document.getElementById("btn");
+    const msg = document.getElementById("msg");
+
+    const personalitza = document.getElementById("personalitza");
+    const genBtn = document.getElementById("gen");
+    const genMsg = document.getElementById("genMsg");
+
+    async function sha256Hex(text){
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    async function comprovaContrasenya(){
+      msg.textContent = "";
+      const entered = (pw.value || "");
+      const hash = await sha256Hex(entered);
+
+      if (hash === PASSWORD_SHA256_HEX) {
+        msg.className = "ok";
+        msg.textContent = "Contrasenya correcta ✅";
+        personalitza.style.display = "block";
+      } else {
+        msg.className = "bad";
+        msg.textContent = "Contrasenya incorrecta.";
+        personalitza.style.display = "none";
+      }
+    }
+
+    btn?.addEventListener("click", comprovaContrasenya);
+    pw?.addEventListener("keydown", (e) => { if (e.key === "Enter") comprovaContrasenya(); });
+
+    async function generarDiploma(nomPersona){
+      const { PDFDocument, StandardFonts, rgb } = PDFLib;
+
+      // IMPORTANT: posa el teu diploma base com "plantilla.pdf" a la mateixa carpeta
+      const plantillaBytes = await fetch("./plantilla.pdf").then(r => r.arrayBuffer());
+      const pdfDoc = await PDFDocument.load(plantillaBytes);
+
+      const page = pdfDoc.getPages()[0];
+      const { width, height } = page.getSize();
+
+      const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      // Nom centrat i gran (autoajust si és llarg)
+      const text = nomPersona.trim();
+      const maxWidth = width * 0.70;
+      let fontSize = 44;
+
+      while (font.widthOfTextAtSize(text, fontSize) > maxWidth && fontSize > 20) {
+        fontSize -= 2;
+      }
+
+      const textWidth = font.widthOfTextAtSize(text, fontSize);
+      const x = (width - textWidth) / 2;
+
+      // Ajust vertical del nom (si cal: prova 280–330)
+      const y = height - 300;
+
+      page.drawText(text, { x, y, size: fontSize, font, color: rgb(0,0,0) });
+
+      const outBytes = await pdfDoc.save();
+      const blob = new Blob([outBytes], { type: "application/pdf" });
+
+      const safeName = text
+        .replace(/[^\p{L}\p{N}]+/gu, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g,"");
+
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `diploma-${safeName || "participant"}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    genBtn?.addEventListener("click", async () => {
+      const nom = document.getElementById("nom").value;
+
+      if (!nom || nom.trim().length < 2) {
+        genMsg.className = "bad";
+        genMsg.textContent = "Escriu un nom vàlid, si us plau.";
+        return;
+      }
+
+      genMsg.className = "muted";
+      genMsg.textContent = "Generant el diploma…";
+
+      try {
+        await generarDiploma(nom);
+        genMsg.className = "ok";
+        genMsg.textContent = "✅ Diploma generat i descarregat.";
+      } catch (e) {
+        console.error(e);
+        genMsg.className = "bad";
+        genMsg.textContent = "❌ Error generant el PDF. Revisa que plantilla.pdf sigui a la mateixa carpeta.";
+      }
+    });
+  </script>
+
+</body>
+</html>
