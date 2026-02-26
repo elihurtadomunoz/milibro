@@ -1,126 +1,284 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Numerologia Interactiva</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif;}
-body { background:#f4f6fb; color:#333; line-height:1.6; }
-header { background: linear-gradient(135deg,#4e73df,#1cc88a); color:white; text-align:center; padding:60px 20px; }
-header h1 { font-size:2.5rem; }
-nav { background:white; padding:15px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.05); position:sticky; top:0; }
-nav a { margin:0 15px; text-decoration:none; color:#4e73df; font-weight:600; transition:0.3s; }
-nav a:hover { color:#1cc88a; }
-main { max-width:1000px; margin:40px auto; padding:0 20px; }
-.card { background:white; padding:30px; border-radius:15px; box-shadow:0 8px 25px rgba(0,0,0,0.05); margin-bottom:30px; transition: transform 0.2s; }
-.card:hover { transform:translateY(-5px);}
-h2 { margin-bottom:15px; color:#4e73df;}
-input[type=date] { padding:8px; border-radius:5px; border:1px solid #ccc;}
-button { padding:10px 20px; border:none; border-radius:5px; background:#4e73df; color:white; font-weight:600; cursor:pointer; transition:0.3s;}
-button:hover { background:#1cc88a; }
-#resultat { margin-top:15px; font-size:1.5rem; font-weight:700; transition: all 0.5s ease; padding:15px; border-radius:10px; text-align:center;}
-footer { text-align:center; padding:20px; background:white; margin-top:40px; box-shadow:0 -2px 10px rgba(0,0,0,0.05);}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Numerologia Interactiva</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+    body {
+      background:#f4f6fb;
+      color:#333;
+      line-height:1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg,#4e73df,#1cc88a);
+      color:white;
+      text-align:center;
+      padding:60px 20px;
+    }
+
+    header h1 {
+      font-size:2.5rem;
+      margin-bottom:10px;
+    }
+
+    nav {
+      background:white;
+      padding:15px;
+      text-align:center;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+
+    nav a {
+      margin:0 15px;
+      text-decoration:none;
+      color:#4e73df;
+      font-weight:600;
+      transition:0.3s;
+    }
+
+    nav a:hover {
+      color:#1cc88a;
+    }
+
+    main {
+      max-width:1000px;
+      margin:40px auto;
+      padding:0 20px;
+    }
+
+    .card {
+      background:white;
+      padding:30px;
+      border-radius:15px;
+      box-shadow:0 8px 25px rgba(0,0,0,0.05);
+      margin-bottom:30px;
+      transition:transform 0.2s;
+    }
+
+    .card:hover {
+      transform:translateY(-5px);
+    }
+
+    h2 {
+      margin-bottom:15px;
+      color:#4e73df;
+    }
+
+    .intro p,
+    #critica li {
+      margin-bottom:14px;
+    }
+
+    input[type="date"] {
+      padding:8px;
+      border-radius:5px;
+      border:1px solid #ccc;
+    }
+
+    button {
+      padding:10px 20px;
+      border:none;
+      border-radius:5px;
+      background:#4e73df;
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    button:hover {
+      background:#1cc88a;
+    }
+
+    #resultat {
+      margin-top:15px;
+      font-size:1.2rem;
+      font-weight:700;
+      transition:all 0.5s ease;
+      padding:15px;
+      border-radius:10px;
+      text-align:center;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      margin-top:15px;
+      overflow:hidden;
+      border-radius:10px;
+    }
+
+    th, td {
+      border:1px solid #ddd;
+      padding:12px;
+      text-align:left;
+    }
+
+    th {
+      background:#4e73df;
+      color:white;
+    }
+
+    tr:nth-child(even) {
+      background:#f8f9fc;
+    }
+
+    ul {
+      padding-left:20px;
+    }
+
+    footer {
+      text-align:center;
+      padding:20px;
+      background:white;
+      margin-top:40px;
+      box-shadow:0 -2px 10px rgba(0,0,0,0.05);
+    }
+  </style>
 </head>
 <body>
 
-<header>
-<h1>🔢 Numerologia Interactiva</h1>
-<p>Descobreix el teu número i el seu missatge!</p>
-</header>
+  <header>
+    <h1>🔢 Numerologia Interactiva</h1>
+    <p>Descobreix el teu número i el seu missatge!</p>
+  </header>
 
-<nav>
-<a href="#calculadora">Calculadora</a>
-<a href="#taula">Taula</a>
-<a href="#critica">Pensament crític</a>
-</nav>
+  <nav>
+    <a href="#introduccio">Introducció</a>
+    <a href="#calculadora">Calculadora</a>
+    <a href="#taula">Taula</a>
+    <a href="#critica">Pensament crític</a>
+  </nav>
 
-<main>
+  <main>
 
-<section id="calculadora" class="card">
-<h2>🧮 Calcula el teu número vital</h2>
-<p>Introdueix la teva data de naixement:</p>
-<input type="date" id="dataNaixement">
-<br><br>
-<button onclick="calcularNumero()">Calcular</button>
-<div id="resultat"></div>
-</section>
+    <section id="introduccio" class="card intro">
+      <h2>✨ Què és exactament la numerologia?</h2>
+      <p>
+        La numerologia és un sistema de creences que atribueix als nombres un significat simbòlic.
+        Segons aquesta idea, la data de naixement o determinades xifres poden donar pistes sobre
+        la personalitat, les fortaleses o la manera d’afrontar la vida.
+      </p>
+      <p>
+        Algunes interpretacions modernes relacionen aquesta pràctica amb tradicions antigues i amb
+        una visió més espiritual que científica del món. Per a moltes persones, la numerologia pot
+        ser una eina de reflexió personal o una manera lúdica d’explorar-se.
+      </p>
+      <p>
+        Tot i això, no hi ha proves científiques sòlides que demostrin que els nombres tinguin
+        capacitat real per predir el futur o definir la personalitat. Per això, és més adequat
+        entendre-la com una pràctica simbòlica o cultural.
+      </p>
+    </section>
 
-<section id="taula" class="card">
-<h2>📊 Significat dels números</h2>
-<table>
-<tr><th>Número</th><th>Significat</th></tr>
-<tr><td>1</td><td>Lideratge i iniciativa</td></tr>
-<tr><td>2</td><td>Cooperació i sensibilitat</td></tr>
-<tr><td>3</td><td>Creativitat i expressió</td></tr>
-<tr><td>4</td><td>Estabilitat i esforç</td></tr>
-<tr><td>5</td><td>Llibertat i canvi</td></tr>
-<tr><td>6</td><td>Responsabilitat i cura</td></tr>
-<tr><td>7</td><td>Reflexió i introspecció</td></tr>
-<tr><td>8</td><td>Ambició i gestió</td></tr>
-<tr><td>9</td><td>Altruisme i idealisme</td></tr>
-<tr><td>11</td><td>Intuïció elevada</td></tr>
-<tr><td>22</td><td>Capacitat constructiva</td></tr>
-</table>
-</section>
+    <section id="calculadora" class="card">
+      <h2>🧮 Calcula el teu número vital</h2>
+      <p>Introdueix la teva data de naixement:</p>
+      <input type="date" id="dataNaixement">
+      <br><br>
+      <button onclick="calcularNumero()">Calcular</button>
+      <div id="resultat"></div>
+    </section>
 
-<section id="critica" class="card">
-<h2>🧠 Pensament crític</h2>
-<ul>
-<li>No hi ha evidència científica que demostri la numerologia.</li>
-<li>Moltes descripcions són generals i aplicables a moltes persones.</li>
-<li>Pot tenir valor simbòlic, però no és una eina predictiva científica.</li>
-</ul>
-</section>
+    <section id="taula" class="card">
+      <h2>📊 Significat dels números</h2>
+      <table>
+        <tr><th>Número</th><th>Significat</th></tr>
+        <tr><td>1</td><td>Lideratge i iniciativa</td></tr>
+        <tr><td>2</td><td>Cooperació i sensibilitat</td></tr>
+        <tr><td>3</td><td>Creativitat i expressió</td></tr>
+        <tr><td>4</td><td>Estabilitat i esforç</td></tr>
+        <tr><td>5</td><td>Llibertat i canvi</td></tr>
+        <tr><td>6</td><td>Responsabilitat i cura</td></tr>
+        <tr><td>7</td><td>Reflexió i introspecció</td></tr>
+        <tr><td>8</td><td>Ambició i gestió</td></tr>
+        <tr><td>9</td><td>Altruisme i idealisme</td></tr>
+        <tr><td>11</td><td>Intuïció elevada</td></tr>
+        <tr><td>22</td><td>Capacitat constructiva</td></tr>
+      </table>
+    </section>
 
-</main>
+    <section id="critica" class="card">
+      <h2>🧠 Pensament crític</h2>
+      <ul>
+        <li>No hi ha evidència científica que demostri la numerologia.</li>
+        <li>Moltes descripcions són generals i aplicables a moltes persones.</li>
+        <li>Pot tenir valor simbòlic, però no és una eina predictiva científica.</li>
+      </ul>
+    </section>
 
-<footer>
-<p>© 2026 - Blog educatiu sobre numerologia</p>
-</footer>
+  </main>
 
-<script>
-function calcularNumero() {
-let data = document.getElementById("dataNaixement").value;
-if(!data){
-document.getElementById("resultat").innerHTML = "Selecciona una data.";
-return;
-}
-let numeros = data.replaceAll("-","");
-let suma = 0;
-for(let digit of numeros){ suma += parseInt(digit);}
-while(suma>9 && suma!==11 && suma!==22){
-suma = suma.toString().split("").reduce((a,b)=>parseInt(a)+parseInt(b),0);
-}
+  <footer>
+    <p>© 2026 - Blog educatiu sobre numerologia</p>
+  </footer>
 
-// Definicions amb missatge i emoji + colors
-const info = {
-1:{text:"Lideratge, iniciativa i independència.", color:"#FF6B6B", emoji:"🦁"},
-2:{text:"Cooperació, sensibilitat i treball en equip.", color:"#FFD93D", emoji:"🤝"},
-3:{text:"Creativitat, expressió i comunicació.", color:"#6BCB77", emoji:"🎨"},
-4:{text:"Estabilitat, esforç i organització.", color:"#4D96FF", emoji:"🏗️"},
-5:{text:"Llibertat, canvi i aventura.", color:"#FF6B6B", emoji:"🌍"},
-6:{text:"Responsabilitat, cura i protecció.", color:"#FFD93D", emoji:"🛡️"},
-7:{text:"Reflexió, introspecció i coneixement.", color:"#6BCB77", emoji:"🔮"},
-8:{text:"Ambició, gestió i orientació a l’èxit.", color:"#4D96FF", emoji:"💼"},
-9:{text:"Altruisme, idealisme i voluntat d’ajudar.", color:"#FF6B6B", emoji:"❤️"},
-11:{text:"Intuïció elevada i inspiració.", color:"#FFD93D", emoji:"🌟"},
-22:{text:"Capacitat constructiva i lideratge amb impacte.", color:"#6BCB77", emoji:"🏰"}
-};
+  <script>
+    function calcularNumero() {
+      let data = document.getElementById("dataNaixement").value;
+      let resultDiv = document.getElementById("resultat");
 
-let resultDiv = document.getElementById("resultat");
-let numeroInfo = info[suma];
-resultDiv.innerHTML = `${numeroInfo.emoji} El teu número vital és <strong>${suma}</strong>: ${numeroInfo.text}`;
-resultDiv.style.background = numeroInfo.color;
-resultDiv.style.color = "#fff";
-resultDiv.style.opacity = 0;
-resultDiv.style.transform = "translateY(-20px)";
-setTimeout(()=>{resultDiv.style.opacity=1; resultDiv.style.transform="translateY(0)";},50);
-}
-</script>
+      if (!data) {
+        resultDiv.innerHTML = "Selecciona una data.";
+        resultDiv.style.background = "#f1f1f1";
+        resultDiv.style.color = "#333";
+        return;
+      }
+
+      let numeros = data.replaceAll("-", "");
+      let suma = 0;
+
+      for (let digit of numeros) {
+        suma += parseInt(digit);
+      }
+
+      while (suma > 9 && suma !== 11 && suma !== 22) {
+        suma = suma.toString().split("").reduce((a, b) => parseInt(a) + parseInt(b), 0);
+      }
+
+      const info = {
+        1: { text:"Lideratge, iniciativa i independència.", color:"#FF6B6B", emoji:"🦁" },
+        2: { text:"Cooperació, sensibilitat i treball en equip.", color:"#FFD93D", emoji:"🤝" },
+        3: { text:"Creativitat, expressió i comunicació.", color:"#6BCB77", emoji:"🎨" },
+        4: { text:"Estabilitat, esforç i organització.", color:"#4D96FF", emoji:"🏗️" },
+        5: { text:"Llibertat, canvi i aventura.", color:"#FF6B6B", emoji:"🌍" },
+        6: { text:"Responsabilitat, cura i protecció.", color:"#FFD93D", emoji:"🛡️" },
+        7: { text:"Reflexió, introspecció i coneixement.", color:"#6BCB77", emoji:"🔮" },
+        8: { text:"Ambició, gestió i orientació a l’èxit.", color:"#4D96FF", emoji:"💼" },
+        9: { text:"Altruisme, idealisme i voluntat d’ajudar.", color:"#FF6B6B", emoji:"❤️" },
+        11: { text:"Intuïció elevada i inspiració.", color:"#FFD93D", emoji:"🌟" },
+        22: { text:"Capacitat constructiva i lideratge amb impacte.", color:"#6BCB77", emoji:"🏰" }
+      };
+
+      let numeroInfo = info[suma];
+
+      if (!numeroInfo) {
+        resultDiv.innerHTML = "No s'ha pogut calcular el número.";
+        resultDiv.style.background = "#f1f1f1";
+        resultDiv.style.color = "#333";
+        return;
+      }
+
+      resultDiv.innerHTML = `${numeroInfo.emoji} El teu número vital és <strong>${suma}</strong>: ${numeroInfo.text}`;
+      resultDiv.style.background = numeroInfo.color;
+      resultDiv.style.color = "#fff";
+      resultDiv.style.opacity = 0;
+      resultDiv.style.transform = "translateY(-20px)";
+
+      setTimeout(() => {
+        resultDiv.style.opacity = 1;
+        resultDiv.style.transform = "translateY(0)";
+      }, 50);
+    }
+  </script>
 
 </body>
 </html>
