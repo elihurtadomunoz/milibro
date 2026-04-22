@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La paraula amagada dels Sixmix</title>
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #1b5e20, #00acc1, #7b1fa2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 520px;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      animation: aparicio 0.8s ease;
+    }
+
+    @keyframes aparicio {
+      from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .emoji {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    input {
+      width: 80%;
+      max-width: 260px;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 1.4rem;
+      text-align: center;
+      letter-spacing: 6px;
+      outline: none;
+      margin-bottom: 18px;
+      background: #ffffff;
+      color: #222;
+      font-weight: bold;
+    }
+
+    button {
+      display: block;
+      margin: 0 auto;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 999px;
+      background: #ffca28;
+      color: #2e2e2e;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.06);
+      background: #ffd54f;
+    }
+
+    .missatge-error {
+      margin-top: 18px;
+      color: #ffebee;
+      font-weight: bold;
+      min-height: 24px;
+    }
+
+    .pantalla-final {
+      display: none;
+    }
+
+    .paraula {
+      font-size: 2.6rem;
+      font-weight: bold;
+      color: #ffca28;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 16px 24px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 10px;
+      letter-spacing: 2px;
+      animation: brilla 1.2s infinite alternate;
+    }
+
+    @keyframes brilla {
+      from {
+        text-shadow: 0 0 8px #fff176;
+      }
+      to {
+        text-shadow: 0 0 24px #ffeb3b;
+      }
+    }
+
+    .decoracio {
+      position: absolute;
+      font-size: 3rem;
+      opacity: 0.18;
+      animation: flotar 6s infinite ease-in-out;
+    }
+
+    .d1 { top: 10%; left: 8%; }
+    .d2 { bottom: 12%; right: 10%; animation-delay: 1s; }
+    .d3 { top: 18%; right: 16%; animation-delay: 2s; }
+    .d4 { bottom: 18%; left: 14%; animation-delay: 3s; }
+
+    @keyframes flotar {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-18px) rotate(8deg);
+      }
+    }
+
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .paraula {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="decoracio d1">🔐</div>
+  <div class="decoracio d2">🌿</div>
+  <div class="decoracio d3">🧩</div>
+  <div class="decoracio d4">📚</div>
+
+  <div class="container" id="pantallaInicial">
+    <div class="emoji">🔎</div>
+
+    <h1>La paraula amagada dels Sixmix</h1>
+
+    <p>
+      Si vols saber la paraula amagada dels Sixmix, introdueix el codi de
+      <strong>5 dígits</strong> que has esbrinat amb la successió de Fibonacci.
+    </p>
+
+    <input
+      type="password"
+      id="codi"
+      maxlength="5"
+      inputmode="numeric"
+      placeholder="-----"
+    />
+
+    <button onclick="comprovarCodi()">Desxifrar</button>
+
+    <div class="missatge-error" id="error"></div>
+  </div>
+
+  <div class="container pantalla-final" id="pantallaFinal">
+    <div class="emoji">✨</div>
+
+    <h1>Has descobert la paraula amagada!</h1>
+
+    <p>
+      La paraula secreta dels Sixmix és:
+    </p>
+
+    <div class="paraula">INTERACTIU</div>
+
+    <p style="margin-top: 24px;">
+      Ara ja formes part del repte Sixmix 🧩
+    </p>
+  </div>
+
+  <script>
+    function comprovarCodi() {
+      const codiCorrecte = "51334";
+      const codiIntroduit = document.getElementById("codi").value;
+      const error = document.getElementById("error");
+
+      if (codiIntroduit === codiCorrecte) {
+        document.getElementById("pantallaInicial").style.display = "none";
+        document.getElementById("pantallaFinal").style.display = "block";
+      } else {
+        error.textContent = "El codi no és correcte. Torna-ho a provar.";
+        document.getElementById("codi").value = "";
+      }
+    }
+
+    document.getElementById("codi").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        comprovarCodi();
+      }
+    });
+  </script>
+
+</body>
+</html>
